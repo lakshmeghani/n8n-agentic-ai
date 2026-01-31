@@ -87,6 +87,9 @@ Shows how **conversational AI can be embedded into messaging platforms** using a
 
 ---
 
+### Import the JSON files into n8n to instantly recreate the full workflows.
+
+---
 # 📸 Workshop Glimpse
 
 ### 🖼 Workshop Session

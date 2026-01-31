@@ -91,12 +91,14 @@ Shows how **conversational AI can be embedded into messaging platforms** using a
 
 ### 🖼 Workshop Session
 
-![Customer Support Workflow](images/Customer_Support_Workflow.jpeg
+![Customer Support Workflow](images/Customer_Support_Workflow.jpeg)
 To-do: Add a Pinecone Vector Database for memory access to AI
 
 ![E-mail Auto-replier Workflow](images/E-mail_Auto-replier_Workflow.jpeg)
+G-Mail Auto-replier using the Google Gemini Flash Model
 
 ![Telegram Auto-replier Workflow](images/Telegram_Auto-replier_Workflow.jpeg)
+Telegram Auto-replier using the Google Gemini Chat Model
 
 ---
 

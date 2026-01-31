@@ -1,0 +1,373 @@
+{
+  "name": "Customer Support (Non-history version)",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "filters": {}
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -176,
+        -64
+      ],
+      "id": "2e44d690-12e9-453f-95fe-480c6a34f3bc",
+      "name": "Gmail Trigger",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "c4nlKQgxxVli6DSV",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "inputText": "={{ $json.snippet }}",
+        "categories": {
+          "categories": [
+            {
+              "category": "Billing",
+              "description": "Either a billing issue or concern related billing of product or service."
+            },
+            {
+              "category": "Technical",
+              "description": "Facing some issues regarding the technical aspect of the product or service."
+            },
+            {
+              "category": "Sales",
+              "description": "Facing some issues regarding the sales aspect of the product or service."
+            },
+            {
+              "category": "Spam",
+              "description": "Message might be a spam!"
+            },
+            {
+              "category": "Other",
+              "description": "Requires human intervention, unable to classify message!"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.textClassifier",
+      "typeVersion": 1.1,
+      "position": [
+        256,
+        -144
+      ],
+      "id": "2e3f6487-3f3b-4c44-8056-9acc6b6a4a85",
+      "name": "Text Classifier"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        128,
+        144
+      ],
+      "id": "b80cbb1f-4ad6-404a-91f4-5433e0be8133",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "IsVx4qjxhr8w2Ma6",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "messageId": "={{ $json.id }}"
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        32,
+        -64
+      ],
+      "id": "bd94aa46-7684-4728-aba3-6a18469a90b9",
+      "name": "Get a message",
+      "webhookId": "994e00f3-7247-4594-8eb4-50341f22ab9d",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "c4nlKQgxxVli6DSV",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        768,
+        80
+      ],
+      "id": "9aadc755-4f77-4dac-8ebc-611b2fcf0cad",
+      "name": "No Operation, do nothing"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('Get a message').item.json.Subject }}{{ $('Get a message').item.json.snippet }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        832,
+        -800
+      ],
+      "id": "fbff4a8d-d720-4f70-b972-a478d8b886df",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Get a message').item.json.From }}",
+        "subject": "={{ $('Get a message').item.json.Subject }}",
+        "message": "={{ $json.output }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1184,
+        -800
+      ],
+      "id": "899efa2d-e8fb-422b-818f-4cbafe05e376",
+      "name": "Send a message",
+      "webhookId": "10ce1785-bb92-4521-84c2-2ce5da1cd6e3",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "c4nlKQgxxVli6DSV",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('Get a message').item.json.Subject }}{{ $('Get a message').item.json.snippet }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        832,
+        -400
+      ],
+      "id": "a0c90cf8-1f37-4e8e-b517-54a95fd27f00",
+      "name": "AI Agent1"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Get a message').item.json.From }}",
+        "subject": "={{ $('Get a message').item.json.Subject }}",
+        "message": "={{ $json.output }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1232,
+        -400
+      ],
+      "id": "6b071c09-ff2a-44d5-b132-2b40d312b200",
+      "name": "Send a message1",
+      "webhookId": "10ce1785-bb92-4521-84c2-2ce5da1cd6e3",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "c4nlKQgxxVli6DSV",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-pro",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        720,
+        -224
+      ],
+      "id": "1f4b7fd8-1b55-4fb5-96bf-c57bb567d036",
+      "name": "Pro Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "IsVx4qjxhr8w2Ma6",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        752,
+        -608
+      ],
+      "id": "796863c0-84bc-4906-bab0-a32f9a381594",
+      "name": "Flash Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "IsVx4qjxhr8w2Ma6",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Gmail Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Text Classifier",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a message": {
+      "main": [
+        [
+          {
+            "node": "Text Classifier",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Text Classifier": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent1": {
+      "main": [
+        [
+          {
+            "node": "Send a message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pro Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Flash Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "90908ffa-e64e-4a69-aeb1-97f3d8f0f6ca",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "70f0f573219054529c03f7ae73893c3378ea1ac6b2cf6e20f585946cff6735bb"
+  },
+  "id": "HAPUM5kUCYVnpVIEWfE0Q",
+  "tags": [
+    {
+      "updatedAt": "2026-01-27T17:37:02.059Z",
+      "createdAt": "2026-01-27T17:37:02.059Z",
+      "id": "4pQefH9d8CLJbyMG",
+      "name": "Support"
+    }
+  ]
+}
